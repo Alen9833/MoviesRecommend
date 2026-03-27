@@ -1,0 +1,96 @@
+{% extends 'movie/base.html' %}
+{% block content %}
+<style>
+    /* 玻璃拟物态表单面板 */
+    .glass-panel {
+        background: rgba(10, 15, 25, 0.65);
+        backdrop-filter: blur(20px) saturate(150%);
+        -webkit-backdrop-filter: blur(20px) saturate(150%);
+        border: 1px solid rgba(0, 242, 254, 0.2);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(0, 242, 254, 0.05);
+        border-radius: 20px;
+        padding: 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* 顶部霓虹装饰线 */
+    .glass-panel::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+        background: linear-gradient(90deg, transparent, #00f2fe, #4facfe, transparent);
+    }
+
+    /* 输入框暗黑定制 */
+    .form-floating .form-control {
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border-radius: 10px;
+    }
+    .form-floating .form-control:focus {
+        background-color: rgba(0, 242, 254, 0.05);
+        border-color: #00f2fe;
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+    }
+    .form-floating label { color: rgba(255, 255, 255, 0.5); }
+    .form-floating .form-control:focus ~ label { color: #00f2fe; }
+
+    /* 赛博朋克按钮 */
+    .btn-cyber {
+        background: transparent;
+        color: #00f2fe;
+        border: 1px solid #00f2fe;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 600;
+    }
+    .btn-cyber:hover {
+        background: rgba(0, 242, 254, 0.1);
+        box-shadow: 0 0 20px rgba(0, 242, 254, 0.4), inset 0 0 10px rgba(0, 242, 254, 0.2);
+        color: #fff;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            {% for message in messages %}
+                {% if message.tags == 'info' %}
+                    <div class="alert alert-info bg-dark text-info border-info alert-dismissible fade show shadow" role="alert">
+                        <i class="bi bi-info-circle-fill me-2"></i>{{ message }}
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            <div class="glass-panel">
+                <h2 class="text-center mb-4 fw-bold" style="color: #e0e0e0; text-shadow: 0 0 10px rgba(255,255,255,0.2);">
+                    <i class="bi bi-fingerprint me-2 text-info"></i>系统身份认证
+                </h2>
+
+                <form action="" method="post">
+                    <div class="form-floating mb-4">
+                        <input type="text" class="form-control" id="inputName" name="name" placeholder="用户名" required autofocus>
+                        <label for="inputName">系统用户名</label>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <input type="password" class="form-control" id="inputPassword" name="password" placeholder="密码" required>
+                        <label for="inputPassword">访问密钥</label>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input class="form-check-input border-secondary bg-dark" type="checkbox" value="1" id="rememberMe" name="remember">
+                        <label class="form-check-label text-muted" for="rememberMe">
+                            保持连接状态
+                        </label>
+                    </div>
+
+                    <button class="btn btn-cyber w-100 py-3 rounded-pill" type="submit">授权登录 / LOGIN</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

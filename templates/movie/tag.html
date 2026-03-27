@@ -1,0 +1,143 @@
+{% extends 'movie/base.html' %}
+{% block content %}
+<style>
+    /* 胶囊控制面板 */
+    .cyber-pill {
+        color: rgba(255,255,255,0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-size: 0.95rem;
+        background: rgba(0,0,0,0.3);
+        letter-spacing: 0.5px;
+    }
+    .cyber-pill:hover {
+        border-color: #00f2fe; color: #00f2fe;
+        background: rgba(0, 242, 254, 0.1);
+        box-shadow: 0 0 15px rgba(0,242,254,0.3);
+    }
+    /* 激活状态：依靠后端模板逻辑，或者默认使用此样式点亮当前选中的 Genre */
+    .cyber-pill.active {
+        background: #00f2fe; color: #000;
+        font-weight: bold; border-color: #00f2fe;
+        box-shadow: 0 0 20px rgba(0,242,254,0.6);
+    }
+
+    /* 玻璃卡片 */
+    .movie-card {
+        background-color: rgba(15, 20, 30, 0.6); backdrop-filter: blur(10px);
+        border-radius: 12px; overflow: hidden; height: 100%; border: 1px solid rgba(255,255,255,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
+    }
+    .movie-card:hover {
+        transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 242, 254, 0.2); border-color: #00f2fe;
+    }
+    .movie-card img { width: 100%; height: 320px; object-fit: cover; transition: opacity 0.3s ease; }
+    .movie-card:hover img { opacity: 0.85; }
+    .movie-info { padding: 15px; }
+    .movie-title { font-size: 1rem; font-weight: 600; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff;}
+
+    /* 赛博翻页器 */
+    .pagination .page-link { background-color: rgba(10, 15, 25, 0.8); border-color: rgba(0, 242, 254, 0.2); color: #00f2fe; transition: all 0.3s ease; }
+    .pagination .page-link:hover { background-color: rgba(0, 242, 254, 0.2); color: #fff; border-color: #00f2fe; box-shadow: 0 0 10px rgba(0,242,254,0.5); }
+    .pagination .page-item.active .page-link { background-color: #00f2fe; border-color: #00f2fe; color: #000; font-weight: bold; box-shadow: 0 0 15px rgba(0,242,254,0.6); }
+    .pagination .page-item.disabled .page-link { background-color: rgba(0,0,0,0.5); color: #555; border-color: rgba(255,255,255,0.05); }
+</style>
+
+<div class="container mt-4 mb-5">
+
+    <div class="p-4 mb-4 rounded-4" style="background: rgba(10, 15, 25, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <h5 class="text-muted mb-3"><i class="bi bi-grid-1x2 me-2"></i>过滤矩阵 / GENRE FILTER</h5>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'movie:tag' %}" class="cyber-pill {% if not genre %}active{% endif %}">全部 ALL</a>
+            <a href="{% url 'movie:tag' %}?genre=Musical" class="cyber-pill {% if genre == 'Musical' %}active{% endif %}">Musical</a>
+            <a href="{% url 'movie:tag' %}?genre=War" class="cyber-pill {% if genre == 'War' %}active{% endif %}">War</a>
+            <a href="{% url 'movie:tag' %}?genre=Crime" class="cyber-pill {% if genre == 'Crime' %}active{% endif %}">Crime</a>
+            <a href="{% url 'movie:tag' %}?genre=Romance" class="cyber-pill {% if genre == 'Romance' %}active{% endif %}">Romance</a>
+            <a href="{% url 'movie:tag' %}?genre=Fantasy" class="cyber-pill {% if genre == 'Fantasy' %}active{% endif %}">Fantasy</a>
+            <a href="{% url 'movie:tag' %}?genre=Drama" class="cyber-pill {% if genre == 'Drama' %}active{% endif %}">Drama</a>
+            <a href="{% url 'movie:tag' %}?genre=Music" class="cyber-pill {% if genre == 'Music' %}active{% endif %}">Music</a>
+            <a href="{% url 'movie:tag' %}?genre=Sci-Fi" class="cyber-pill {% if genre == 'Sci-Fi' %}active{% endif %}">Sci-Fi</a>
+            <a href="{% url 'movie:tag' %}?genre=Action" class="cyber-pill {% if genre == 'Action' %}active{% endif %}">Action</a>
+            <a href="{% url 'movie:tag' %}?genre=Comedy" class="cyber-pill {% if genre == 'Comedy' %}active{% endif %}">Comedy</a>
+            <a href="{% url 'movie:tag' %}?genre=Biography" class="cyber-pill {% if genre == 'Biography' %}active{% endif %}">Biography</a>
+            <a href="{% url 'movie:tag' %}?genre=Family" class="cyber-pill {% if genre == 'Family' %}active{% endif %}">Family</a>
+            <a href="{% url 'movie:tag' %}?genre=Horror" class="cyber-pill {% if genre == 'Horror' %}active{% endif %}">Horror</a>
+            <a href="{% url 'movie:tag' %}?genre=Short" class="cyber-pill {% if genre == 'Short' %}active{% endif %}">Short</a>
+            <a href="{% url 'movie:tag' %}?genre=Documentary" class="cyber-pill {% if genre == 'Documentary' %}active{% endif %}">Documentary</a>
+            <a href="{% url 'movie:tag' %}?genre=Film-Noir" class="cyber-pill {% if genre == 'Film-Noir' %}active{% endif %}">Film-Noir</a>
+            <a href="{% url 'movie:tag' %}?genre=Animation" class="cyber-pill {% if genre == 'Animation' %}active{% endif %}">Animation</a>
+            <a href="{% url 'movie:tag' %}?genre=Adventure" class="cyber-pill {% if genre == 'Adventure' %}active{% endif %}">Adventure</a>
+            <a href="{% url 'movie:tag' %}?genre=Mystery" class="cyber-pill {% if genre == 'Mystery' %}active{% endif %}">Mystery</a>
+            <a href="{% url 'movie:tag' %}?genre=News" class="cyber-pill {% if genre == 'News' %}active{% endif %}">News</a>
+            <a href="{% url 'movie:tag' %}?genre=Sport" class="cyber-pill {% if genre == 'Sport' %}active{% endif %}">Sport</a>
+            <a href="{% url 'movie:tag' %}?genre=History" class="cyber-pill {% if genre == 'History' %}active{% endif %}">History</a>
+            <a href="{% url 'movie:tag' %}?genre=Thriller" class="cyber-pill {% if genre == 'Thriller' %}active{% endif %}">Thriller</a>
+            <a href="{% url 'movie:tag' %}?genre=Western" class="cyber-pill {% if genre == 'Western' %}active{% endif %}">Western</a>
+        </div>
+    </div>
+
+    {% if genre %}
+        <div class="mb-4 d-flex align-items-center">
+            <span class="fs-5 text-muted">当前锁定节点：</span>
+            <span class="fs-4 fw-bold ms-2 text-info" style="text-shadow: 0 0 10px rgba(0,242,254,0.5);">{{ genre }}</span>
+        </div>
+    {% endif %}
+
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 mb-5">
+        {% for movie in movies %}
+        <div class="col">
+            <a href="{% url 'movie:detail' movie.pk %}" class="text-decoration-none">
+                <div class="movie-card">
+                    <img src="/static/movie/poster/{{ movie.imdb_id }}.jpg" alt="{{ movie.name }}">
+                    <div class="movie-info">
+                        <div class="movie-title" title="{{ movie.name }}">{{ movie.name }}</div>
+                        <div class="text-warning fw-bold" style="font-size: 0.95rem;">
+                            <i class="bi bi-star-fill me-1"></i>{{ movie.get_score }}
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center flex-wrap shadow-lg">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link rounded-start-pill" href="{% url 'movie:tag' %}?genre={{ genre }}&p={{ page_obj.previous_page_number }}">上一页</a></li>
+            {% else %}
+                <li class="page-item disabled"><a class="page-link rounded-start-pill" href="javascript:void(0);">上一页</a></li>
+            {% endif %}
+
+            {% if left_has_more %}
+                <li class="page-item"><a class="page-link" href="{% url 'movie:tag' %}?genre={{ genre }}&p=1">1</a></li>
+                <li class="page-item disabled"><a class="page-link" href="javascript:void(0)">...</a></li>
+            {% endif %}
+
+            {% for left_page in left_pages %}
+                <li class="page-item"><a class="page-link" href="{% url 'movie:tag' %}?genre={{ genre }}&p={{ left_page }}">{{ left_page }}</a></li>
+            {% endfor %}
+
+            <li class="page-item active"><a class="page-link" href="javascript:void(0);">{{ current_page }}</a></li>
+
+            {% for right_page in right_pages %}
+                <li class="page-item"><a class="page-link" href="{% url 'movie:tag' %}?genre={{ genre }}&p={{ right_page }}">{{ right_page }}</a></li>
+            {% endfor %}
+
+            {% if right_has_more %}
+                <li class="page-item disabled"><a class="page-link" href="javascript:void(0)">...</a></li>
+                <li class="page-item"><a class="page-link" href="{% url 'movie:tag' %}?genre={{ genre }}&p={{ paginator.num_pages }}">{{ paginator.num_pages }}</a></li>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link rounded-end-pill" href="{% url 'movie:tag' %}?genre={{ genre }}&p={{ page_obj.next_page_number }}">下一页</a></li>
+            {% else %}
+                <li class="page-item disabled"><a class="page-link rounded-end-pill" href="javascript:void(0);">下一页</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

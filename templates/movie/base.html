@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'movie/favicon1.ico' %}"/>
+    <link rel="bookmark" href="{% static 'movie/favicon1.ico' %}"/>
+    <title>MoviesRecommend - 沉浸式电影宇宙</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+
+    <style>
+        /* 下面是你炫酷的星空 CSS ... */
+        /* ================= 保留之前的双层视差星空 ================= */
+        body {
+            margin: 0; padding: 0;
+            background: linear-gradient(-45deg, #050b14, #111827, #0a1128, #160d1c);
+            background-size: 400% 400%;
+            animation: nebulaFlow 20s ease infinite;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            position: relative; z-index: 0; overflow-x: hidden;
+        }
+        @keyframes nebulaFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        body::before {
+            content: ""; position: fixed; top: -50vh; left: -50vw; width: 200vw; height: 200vh;
+            background-image: radial-gradient(1.5px 1.5px at 40px 70px, rgba(255,255,255,0.8), transparent), radial-gradient(1px 1px at 150px 150px, rgba(255,255,255,0.6), transparent), radial-gradient(2px 2px at 250px 90px, rgba(255,255,255,0.9), transparent);
+            background-size: 250px 250px; animation: starDriftSlow 100s linear infinite, twinkle 4s ease-in-out infinite alternate; z-index: -2; pointer-events: none;
+        }
+        body::after {
+            content: ""; position: fixed; top: -50vh; left: -50vw; width: 200vw; height: 200vh;
+            background-image: radial-gradient(3px 3px at 50px 100px, rgba(255, 255, 255, 1), transparent), radial-gradient(2px 2px at 200px 50px, rgba(0, 242, 254, 0.8), transparent);
+            background-size: 400px 400px; animation: starDriftFast 60s linear infinite, twinkle 3s ease-in-out infinite alternate-reverse; z-index: -1; pointer-events: none;
+        }
+        @keyframes starDriftSlow { from { transform: translateY(0); } to { transform: translateY(50vh); } }
+        @keyframes starDriftFast { from { transform: translateY(0) rotate(0deg); } to { transform: translateY(50vh) rotate(5deg); } }
+        @keyframes twinkle { 0% { opacity: 0.2; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 10px rgba(255,255,255,0.5); } }
+
+        /* ================= 增强 3：超限光学玻璃 (Ultra-Glass 2.0) ================= */
+        .navbar {
+            /* 复合透明背景模拟厚度 */
+            background: linear-gradient(135deg, rgba(10, 15, 25, 0.3), rgba(10, 15, 25, 0.5)) !important;
+            backdrop-filter: blur(25px) saturate(200%);
+            -webkit-backdrop-filter: blur(25px) saturate(200%);
+            /* 顶层白线反射与底层深色阴影交织 */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .navbar:hover {
+            background: linear-gradient(135deg, rgba(10, 15, 25, 0.5), rgba(10, 15, 25, 0.7)) !important;
+        }
+
+        /* 品牌 Logo 全息流动渐变 */
+        .navbar-brand {
+            font-weight: 900;
+            background: linear-gradient(to right, #00f2fe, #4facfe, #f093fb, #f5576c, #00f2fe);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.7rem;
+            letter-spacing: 1px;
+            animation: textHoloShine 4s linear infinite;
+        }
+        @keyframes textHoloShine { to { background-position: 200% center; } }
+
+        /* ================= 增强 4：双轨脉冲霓虹动效 (Cyber-Pulse) ================= */
+        .nav-link {
+            position: relative;
+            color: rgba(255, 255, 255, 0.6) !important;
+            margin: 0 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 弹性缓冲 */
+        }
+
+        .nav-link:hover {
+            color: #ffffff !important;
+            letter-spacing: 2px; /* 文字悬浮时呼吸展开 */
+            text-shadow: 0 0 8px #00f2fe, 0 0 20px #00f2fe;
+        }
+
+        /* 顶部品红脉冲线 */
+        .nav-link::before {
+            content: ''; position: absolute; top: -5px; left: 50%;
+            width: 0; height: 2px; background-color: #f5576c;
+            transform: translateX(-50%); transition: width 0.4s ease;
+            box-shadow: 0 0 10px #f5576c;
+        }
+        /* 底部青绿脉冲线 */
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -5px; left: 50%;
+            width: 0; height: 2px; background-color: #00f2fe;
+            transform: translateX(-50%); transition: width 0.4s ease;
+            box-shadow: 0 0 10px #00f2fe, 0 0 20px #00f2fe;
+        }
+        .nav-link:hover::before, .nav-link:hover::after { width: 100%; }
+
+        /* ================= 增强 5：空间展开 & 粒子化交互 ================= */
+        /* 1. 光剑搜索框伸缩 */
+        .search-input {
+            width: 180px; /* 默认变短 */
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #fff !important;
+            border-radius: 25px 0 0 25px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* 极强的回弹力 */
+        }
+        .search-input::placeholder { color: rgba(255, 255, 255, 0.3); }
+
+        .search-input:focus {
+            width: 320px; /* 聚焦时猛然拉长 */
+            background-color: rgba(0, 242, 254, 0.05) !important;
+            border-color: #00f2fe !important;
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.4), inset 0 0 10px rgba(0, 242, 254, 0.2) !important;
+            outline: none;
+        }
+        .search-btn {
+            border-radius: 0 25px 25px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1); border-left: none;
+            transition: all 0.3s; color: rgba(255,255,255,0.7);
+        }
+        .search-input:focus + .search-btn {
+            border-color: #00f2fe; color: #00f2fe; background: rgba(0, 242, 254, 0.1);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+        }
+        .search-btn:hover { background-color: #00f2fe; color: #000; box-shadow: 0 0 20px #00f2fe; }
+
+        /* 2. 呼吸灯光环头像 */
+        .avatar-glow {
+            border-radius: 50%;
+            border: 2px solid transparent;
+            box-shadow: 0 0 0 2px rgba(0, 242, 254, 0.3);
+            transition: all 0.4s ease;
+        }
+        .nav-item.dropdown:hover .avatar-glow {
+            box-shadow: 0 0 0 3px #00f2fe, 0 0 15px #00f2fe;
+            transform: scale(1.1);
+        }
+
+        /* 3. HUD 风格 3D 下拉菜单 */
+        .dropdown-menu {
+            display: block; /* 覆盖 Bootstrap 默认，改用 CSS 控制显示 */
+            visibility: hidden; opacity: 0;
+            transform: translateY(20px) scale(0.95) rotateX(-10deg);
+            transform-origin: top;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            background: rgba(10, 15, 25, 0.85) !important;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(0, 242, 254, 0.15);
+            border-radius: 12px; margin-top: 15px;
+        }
+        /* 废除点击，改为悬浮触发 3D 展开 */
+        .nav-item.dropdown:hover .dropdown-menu {
+            visibility: visible; opacity: 1;
+            transform: translateY(0) scale(1) rotateX(0deg);
+        }
+
+        /* 菜单项滑块动效 */
+        .dropdown-item {
+            color: #ccc; transition: all 0.3s ease;
+            position: relative; overflow: hidden;
+            font-weight: 500;
+        }
+        .dropdown-item:hover {
+            background: linear-gradient(90deg, rgba(0, 242, 254, 0.1), transparent);
+            color: #fff;
+            padding-left: 1.8rem; /* 文字向右推进 */
+            border-left: 4px solid #00f2fe; /* 亮起左侧指示灯 */
+        }
+
+        .mastfoot {
+            color: rgba(255, 255, 255, 0.4);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container py-1">
+        <a class="navbar-brand" href="{% url 'movie:index' %}">
+            <i class="bi bi-camera-reels me-2" style="color: #00f2fe; text-shadow: 0 0 10px #00f2fe;"></i>MoviesRecommend
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-4">
+                <li class="nav-item"><a class="nav-link" href="{% url 'movie:index' %}">首页</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'movie:tag' %}">电影分类</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'movie:hot' %}">热门电影</a></li>
+                {% if movie_user %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'movie:recommend' %}">推荐列表</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'movie:history' movie_user.id %}">评分历史</a></li>
+                {% endif %}
+            </ul>
+
+            <form class="d-flex me-4 position-relative" method="GET" action="{% url 'movie:search' %}">
+                <input class="form-control search-input px-3" type="search" name="keyword" placeholder="搜索核心数据库..." required>
+                <button class="btn btn-outline-light search-btn px-3" type="submit"><i class="bi bi-search"></i></button>
+            </form>
+
+            <ul class="navbar-nav">
+                {% if movie_user %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link text-white d-flex align-items-center" href="#" id="userDropdown">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ movie_user.name }}" alt="avatar" width="32" height="32" class="avatar-glow me-2 bg-dark">
+                            {{ movie_user.name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="userDropdown">
+                            <li>
+                                <a class="dropdown-item py-2" href="{% url 'movie:logout' %}">
+                                    <i class="bi bi-power me-2 text-danger"></i>断开连接 (退出)
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item d-flex align-items-center"><a class="nav-link" href="{% url 'movie:register' %}">注册账号</a></li>
+                    <li class="nav-item ms-3">
+                        <a class="btn rounded-pill px-4 shadow-sm fw-bold"
+                           style="background: linear-gradient(45deg, #00f2fe, #4facfe); border: none; color: #000; box-shadow: 0 0 15px rgba(0, 242, 254, 0.4) !important;"
+                           href="{% url 'movie:login' %}">
+                           系统登录
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="min-vh-100 pb-5">
+    {% block content %}
+    {% endblock %}
+</main>
+
+<footer class="mastfoot text-center mt-5 py-4">
+    <div class="container">
+        <p class="mb-1" style="font-size: 0.9rem;">
+            <span>Copyright &copy; create by BHML 2026, All Rights Reserved</span>
+        </p>
+        <p class="mb-0">
+            <a href="/admin" class="text-decoration-none text-muted" style="transition: color 0.3s;" title="需通过 python manage.py createsuperuser 创建的管理员账号登录"><i class="bi bi-terminal me-1"></i>后台管理（需管理员账号）</a>
+        </p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

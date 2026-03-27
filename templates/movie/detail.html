@@ -1,0 +1,269 @@
+{% extends 'movie/base.html' %}
+{% block content %}
+
+<style>
+    /* ================== 全局档案卡片样式 ================== */
+    .movie-detail-card {
+        background: rgba(15, 20, 30, 0.7);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        overflow: hidden;
+    }
+
+    .poster-container img {
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .meta-label { color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 1px;}
+    .meta-value { color: #fff; font-size: 1.05rem; margin-bottom: 15px; }
+
+    /* 霓虹分类徽章 */
+    .genre-badge {
+        background: rgba(0, 242, 254, 0.1); border: 1px solid #00f2fe;
+        color: #00f2fe; text-decoration: none; transition: all 0.3s;
+    }
+    .genre-badge:hover {
+        background: #00f2fe; color: #000; box-shadow: 0 0 15px #00f2fe;
+    }
+
+    /* ================== 相似电影推荐卡片 ================== */
+    .sim-movie-card {
+        border-radius: 8px; overflow: hidden; position: relative;
+        border: 1px solid transparent; transition: all 0.3s; height: 100%;
+    }
+    .sim-movie-card:hover {
+        border-color: #f5576c; transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(245, 87, 108, 0.3);
+    }
+    .sim-movie-card img { width: 100%; height: 220px; object-fit: cover; }
+    .sim-title {
+        position: absolute; bottom: 0; left: 0; right: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        padding: 20px 10px 10px; color: #fff; font-size: 0.85rem;
+    }
+
+    /* ================== 动态评分组件专属特效 ================== */
+    .dynamic-stars i {
+        font-size: 2.2rem;
+        color: rgba(0, 242, 254, 0.15); /* 默认未点亮的暗光 */
+        cursor: pointer;
+        transition: color 0.2s ease, text-shadow 0.2s ease;
+        margin-right: 2px;
+    }
+    .dynamic-stars i.bi-star-fill, .dynamic-stars i.bi-star-half {
+        color: #00f2fe; /* 激活时的赛博亮蓝色 */
+        text-shadow: 0 0 15px rgba(0, 242, 254, 0.8), 0 0 30px rgba(0, 242, 254, 0.4);
+        animation: starPulse 0.3s ease-out;
+    }
+    @keyframes starPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.15); }
+        100% { transform: scale(1); }
+    }
+
+    /* 评论输入框发光 */
+    .cyber-textarea {
+        background: rgba(0,0,0,0.4); color: #fff;
+        border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s;
+    }
+    .cyber-textarea:focus {
+        background: rgba(0, 242, 254, 0.05); border-color: #00f2fe;
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.3), inset 0 0 10px rgba(0, 242, 254, 0.1);
+        outline: none;
+    }
+</style>
+
+<div class="container mt-5">
+    {% for message in messages %}
+        {% if message.tags == 'info' %}
+            <div class="alert alert-info bg-dark text-info border-info alert-dismissible fade show" role="alert">
+                <i class="bi bi-info-circle-fill me-2"></i>{{ message }}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    <div class="movie-detail-card p-4 mb-5">
+        <div class="row">
+            <div class="col-md-4 col-lg-3 mb-4 mb-md-0 poster-container">
+                <img src="/static/movie/poster/{{ movie.imdb_id }}.jpg" alt="{{ movie.name }}">
+            </div>
+            <div class="col-md-8 col-lg-9">
+                <h1 class="fw-bold mb-1" style="color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.3);">{{ movie.name }}</h1>
+                <div class="mb-4">
+                    <span class="text-warning fs-5">
+                        {% for foo in movie.get_score_int_range %}<i class="bi bi-star-fill"></i>{% endfor %}
+                    </span>
+                    <strong class="ms-2 fs-4" style="color:#00f2fe; text-shadow: 0 0 10px rgba(0,242,254,0.5);">{{ movie.get_score }}</strong>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="meta-label">核心简介 / Synopsis</div>
+                        <div class="meta-value text-muted" style="line-height: 1.6;">{{ movie.intro }}</div>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <div class="meta-label">导演 / Director</div>
+                        <div class="meta-value">{{ movie.director }}</div>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <div class="meta-label">编剧 / Writers</div>
+                        <div class="meta-value">{{ movie.writers }}</div>
+                    </div>
+                    <div class="col-12 mt-2">
+                        <div class="meta-label">主演 / Cast</div>
+                        <div class="meta-value">{{ movie.actors }}</div>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <div class="meta-label">时长 / Runtime</div>
+                        <div class="meta-value">{{ movie.time }}</div>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <div class="meta-label">发行时间 / Release</div>
+                        <div class="meta-value">{{ movie.release_time }}</div>
+                    </div>
+                    <div class="col-12 mt-3">
+                        <div class="meta-label mb-2">分类节点 / Genres</div>
+                        <div>
+                            {% for genre in movie.get_genre %}
+                                <a href="{% url 'movie:tag' %}?genre={{ genre }}" class="badge rounded-pill genre-badge px-3 py-2 me-1">{{ genre }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if login %}
+    <div class="movie-detail-card p-4 mb-5" style="border-color: rgba(0, 242, 254, 0.3);">
+        <h4 class="mb-4" style="color: #00f2fe; text-shadow: 0 0 10px rgba(0,242,254,0.3);">
+            <i class="bi bi-crosshair me-2"></i>记录观测数据 (打分)
+        </h4>
+
+        <form action="" method="post">
+            <div class="mb-4 d-flex align-items-center">
+                <div class="dynamic-stars" id="dynamicStars">
+                    <i class="bi bi-star star-item"></i>
+                    <i class="bi bi-star star-item"></i>
+                    <i class="bi bi-star star-item"></i>
+                    <i class="bi bi-star star-item"></i>
+                    <i class="bi bi-star star-item"></i>
+                </div>
+                <div class="ms-4 px-3 py-1 rounded" style="background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.3);">
+                    <span id="scoreText" class="fw-bold fs-3" style="color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5);">0.0</span>
+                    <span class="text-info ms-1" style="font-size: 0.9rem; letter-spacing: 1px;">分</span>
+                </div>
+
+                <input type="number" step="0.5" min="0" max="5" name="score" id="scoreInput" value="{{ score|default:'0' }}" style="display: none;">
+            </div>
+
+            <div class="form-floating mb-4">
+                <textarea class="form-control cyber-textarea" name="comment" id="comment" style="height: 120px;">{{ comment }}</textarea>
+                <label for="comment" class="text-muted">输入评测分析报告...</label>
+            </div>
+
+            <button type="submit" class="btn px-5 py-2 rounded-pill fw-bold" style="background: linear-gradient(45deg, #00f2fe, #4facfe); color: #000; box-shadow: 0 0 15px rgba(0,242,254,0.5); border: none;">
+                写入核心数据库
+            </button>
+            <button type="reset" class="btn btn-link text-muted ms-3 text-decoration-none hover-white" onclick="setTimeout(()=>window.location.reload(), 100)">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>重置状态
+            </button>
+        </form>
+    </div>
+    {% endif %}
+
+    <h4 class="mb-4" style="color: #00f2fe; text-shadow: 0 0 10px rgba(0,242,254,0.3);">
+        <i class="bi bi-hdd-network me-2"></i>关联节点推荐
+    </h4>
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3 mb-5">
+        {% for movie in similarity_movies %}
+        <div class="col">
+            <a href="{% url 'movie:detail' movie.pk %}" class="text-decoration-none">
+                <div class="sim-movie-card bg-dark">
+                    <img src="/static/movie/poster/{{ movie.imdb_id }}.jpg" alt="{{ movie.name }}">
+                    <div class="sim-title">
+                        <div class="text-truncate">{{ movie.name }}</div>
+                        <div class="text-warning" style="font-size: 0.8rem;"><i class="bi bi-star-fill me-1"></i>{{ movie.get_score }}</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% if login %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const starContainer = document.getElementById('dynamicStars');
+        if (!starContainer) return;
+
+        const stars = starContainer.querySelectorAll('.star-item');
+        const scoreInput = document.getElementById('scoreInput');
+        const scoreText = document.getElementById('scoreText');
+
+        // 安全解析后端传来的分数值，防止报 NaN 错误
+        let currentScore = parseFloat(scoreInput.value);
+        if (isNaN(currentScore)) currentScore = 0;
+
+        // 核心渲染函数：支持 0.5 星级
+        function updateStars(val) {
+            let numVal = parseFloat(val);
+            if (isNaN(numVal)) numVal = 0;
+
+            stars.forEach((star, index) => {
+                star.classList.remove('bi-star', 'bi-star-half', 'bi-star-fill');
+                let starVal = index + 1;
+
+                if (numVal >= starVal) {
+                    star.classList.add('bi-star-fill');
+                } else if (numVal >= starVal - 0.5) {
+                    star.classList.add('bi-star-half');
+                } else {
+                    star.classList.add('bi-star');
+                }
+            });
+
+            if (scoreText) {
+                scoreText.innerText = numVal.toFixed(1);
+            }
+        }
+
+        // 首次加载初始化
+        updateStars(currentScore);
+
+        // 鼠标悬停实时交互
+        stars.forEach((star, index) => {
+            star.addEventListener('mousemove', function(e) {
+                const rect = star.getBoundingClientRect();
+                const isHalf = (e.clientX - rect.left) < (rect.width / 2);
+                updateStars(isHalf ? index + 0.5 : index + 1);
+            });
+
+            // 鼠标点击锁定分数
+            star.addEventListener('click', function(e) {
+                const rect = star.getBoundingClientRect();
+                const isHalf = (e.clientX - rect.left) < (rect.width / 2);
+                currentScore = isHalf ? index + 0.5 : index + 1;
+
+                scoreInput.value = currentScore; // 把数据写入隐藏表单，供 Django 后端读取
+                updateStars(currentScore);
+            });
+        });
+
+        // 鼠标离开打分区域时，回退到实际锁定的分数
+        starContainer.addEventListener('mouseleave', function() {
+            updateStars(currentScore);
+        });
+    });
+</script>
+{% endif %}
+
+{% endblock %}

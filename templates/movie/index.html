@@ -1,0 +1,136 @@
+{% extends "movie/base.html" %}
+{% block content %}
+<style>
+    /* 电影卡片高级动效 */
+    .movie-card {
+        background-color: #1e1e1e;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        border: 1px solid #333;
+    }
+    .movie-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7);
+        border-color: #555;
+    }
+    .movie-card img {
+        width: 100%;
+        height: 320px;
+        object-fit: cover;
+        transition: opacity 0.3s ease;
+    }
+    .movie-card:hover img {
+        opacity: 0.85;
+    }
+    .movie-info {
+        padding: 15px;
+    }
+    .movie-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .movie-score {
+        color: #ffc107; /* 评分星星使用警告黄 */
+        font-weight: bold;
+        font-size: 0.95rem;
+    }
+
+    /* 翻页组件适配暗黑模式 */
+    .pagination .page-link {
+        background-color: #1e1e1e;
+        border-color: #333;
+        color: #e0e0e0;
+    }
+    .pagination .page-link:hover {
+        background-color: #333;
+        color: #fff;
+    }
+    .pagination .active .page-link {
+        background-color: #e50914;
+        border-color: #e50914;
+        color: #fff;
+    }
+    .pagination .disabled .page-link {
+        background-color: #121212;
+        color: #555;
+        border-color: #333;
+    }
+</style>
+
+<div class="container mt-4 mb-5">
+    <div class="p-5 text-light rounded-4 shadow-lg" style="background: linear-gradient(145deg, #1a1a1a, #0a0a0a); border: 1px solid #222;">
+        <h1 class="display-5 fw-bold mb-3"><i class="bi bi-camera-reels text-danger me-3"></i>探索光影世界</h1>
+        <p class="fs-5 text-muted">
+            本系统搭载 <strong>movielens (ml-latest-small)</strong> 数据集，为您提供 9742 部电影及 10 万余条真实评分记录的精准推荐。
+        </p>
+        <hr class="border-secondary my-4">
+        <p class="text-secondary mb-0">
+            <i class="bi bi-check2-circle text-success me-2"></i>浏览热门影视 &nbsp;&nbsp;
+            <i class="bi bi-check2-circle text-success me-2"></i>记录观影评分 &nbsp;&nbsp;
+            <i class="bi bi-check2-circle text-success me-2"></i>获取基于协同过滤的专属推荐
+        </p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 mb-5">
+        {% for movie in movies %}
+        <div class="col">
+            <a href="{% url 'movie:detail' movie.pk %}" class="text-decoration-none text-light">
+                <div class="movie-card">
+                    <img src="/static/movie/poster/{{ movie.imdb_id }}.jpg" alt="{{ movie.name }}">
+                    <div class="movie-info">
+                        <div class="movie-title" title="{{ movie.name }}">{{ movie.name }}</div>
+                        <div class="movie-score">
+                            <i class="bi bi-star-fill me-1"></i>{{ movie.get_score }}
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center flex-wrap shadow-sm">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="{% url 'movie:index' %}?p={{ page_obj.previous_page_number }}">上一页</a></li>
+            {% else %}
+                <li class="page-item disabled"><a class="page-link" href="javascript:void(0);">上一页</a></li>
+            {% endif %}
+
+            {% if left_has_more %}
+                <li class="page-item"><a class="page-link" href="{% url 'movie:index' %}?p=1">1</a></li>
+                <li class="page-item disabled"><a class="page-link" href="javascript:void(0)">...</a></li>
+            {% endif %}
+
+            {% for left_page in left_pages %}
+                <li class="page-item"><a class="page-link" href="{% url 'movie:index' %}?p={{ left_page }}">{{ left_page }}</a></li>
+            {% endfor %}
+
+            <li class="page-item active" aria-current="page"><a class="page-link" href="javascript:void(0);">{{ current_page }}</a></li>
+
+            {% for right_page in right_pages %}
+                <li class="page-item"><a class="page-link" href="{% url 'movie:index' %}?p={{ right_page }}">{{ right_page }}</a></li>
+            {% endfor %}
+
+            {% if right_has_more %}
+                <li class="page-item disabled"><a class="page-link" href="javascript:void(0)">...</a></li>
+                <li class="page-item"><a class="page-link" href="{% url 'movie:index' %}?p={{ paginator.num_pages }}">{{ paginator.num_pages }}</a></li>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="{% url 'movie:index' %}?p={{ page_obj.next_page_number }}">下一页</a></li>
+            {% else %}
+                <li class="page-item disabled"><a class="page-link" href="javascript:void(0);">下一页</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}
