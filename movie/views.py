@@ -5,9 +5,11 @@ from collections import defaultdict
 
 from django.contrib import messages
 from django.db.models import Max, Count
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, reverse
 from django.views.generic import View, ListView, DetailView
 
+from .ai_assistant import handle_chat as handle_ai_chat
 from .forms import RegisterForm, LoginForm, CommentForm
 from .models import User, Movie, Movie_rating, Movie_hot
 
@@ -348,6 +350,85 @@ def delete_recode(request, pk):
 
 
 # 推荐电影视图 (保持原代码)
+class ChatView(View):
+    ERROR_STATUS_MAP = {
+        'UNAUTHORIZED': 401,
+        'INVALID_REQUEST': 400,
+        'MODEL_UNAVAILABLE': 503,
+        'MODEL_BAD_RESPONSE': 502,
+        'DATABASE_ERROR': 500,
+        'INTERNAL_ERROR': 500,
+    }
+
+    def post(self, request):
+        user_id = request.session.get('user_id')
+        if not user_id:
+            return JsonResponse({
+                'ok': False,
+                'error_code': 'UNAUTHORIZED',
+                'error_message': '用户未登录',
+                'reply': '请先登录后再使用电影助手。',
+                'movies': [],
+            }, status=401)
+
+        user = User.objects.filter(pk=user_id).first()
+        if not user:
+            return JsonResponse({
+                'ok': False,
+                'error_code': 'UNAUTHORIZED',
+                'error_message': '登录状态已失效',
+                'reply': '你的登录状态已失效，请重新登录后再使用电影助手。',
+                'movies': [],
+            }, status=401)
+
+        try:
+            payload = json.loads(request.body or '{}')
+        except (TypeError, ValueError, json.JSONDecodeError):
+            return JsonResponse({
+                'ok': False,
+                'error_code': 'INVALID_REQUEST',
+                'error_message': '请求 JSON 格式错误',
+                'reply': '请求格式不正确，请稍后重试。',
+                'movies': [],
+            }, status=400)
+
+        message = payload.get('message', '')
+        history = payload.get('history', [])
+        if not isinstance(message, str) or not message.strip():
+            return JsonResponse({
+                'ok': False,
+                'error_code': 'INVALID_REQUEST',
+                'error_message': 'message 不能为空',
+                'reply': '请输入你想问的内容。',
+                'movies': [],
+            }, status=400)
+        if history is not None and not isinstance(history, list):
+            return JsonResponse({
+                'ok': False,
+                'error_code': 'INVALID_REQUEST',
+                'error_message': 'history 必须是数组',
+                'reply': '上下文格式不正确，请稍后重试。',
+                'movies': [],
+            }, status=400)
+
+        try:
+            result = handle_ai_chat(message=message.strip(), history=history or [], user=user)
+            if result.get('ok', True):
+                return JsonResponse(result, status=200)
+
+            error_code = result.get('error_code', 'INTERNAL_ERROR')
+            status_code = self.ERROR_STATUS_MAP.get(error_code, 500)
+            return JsonResponse(result, status=status_code)
+        except Exception:
+            return JsonResponse({
+                'ok': False,
+                'error_code': 'INTERNAL_ERROR',
+                'error_message': '服务内部异常',
+                'reply': '助手暂时出了点问题，请稍后再试。',
+                'movies': [],
+            }, status=500)
+
+
 class RecommendMovieView(ListView):
     model = Movie
     template_name = 'movie/recommend.html'

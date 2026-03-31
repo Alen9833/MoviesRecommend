@@ -27,5 +27,7 @@ urlpatterns = [
     # 删除记录
     path('del_rec/<int:pk>', views.delete_recode, name='delete_record'),
     # 推荐页面
-    path('recommend', views.RecommendMovieView.as_view(), name='recommend')
+    path('recommend', views.RecommendMovieView.as_view(), name='recommend'),
+    # 聊天接口
+    path('chat', views.ChatView.as_view(), name='chat'),
 ]

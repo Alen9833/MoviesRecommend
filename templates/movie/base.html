@@ -181,6 +181,242 @@
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
         }
+
+        .chat-launcher {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            width: 58px;
+            height: 58px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.95), rgba(79, 172, 254, 0.95));
+            color: #03111f;
+            font-size: 1.35rem;
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.35), 0 12px 30px rgba(0, 0, 0, 0.35);
+            z-index: 1080;
+        }
+
+        .chat-panel {
+            position: fixed;
+            right: 24px;
+            bottom: 96px;
+            width: min(380px, calc(100vw - 32px));
+            height: 560px;
+            display: none;
+            flex-direction: column;
+            background: linear-gradient(135deg, rgba(8, 14, 24, 0.92), rgba(15, 24, 40, 0.92));
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(0, 242, 254, 0.18);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45), 0 0 24px rgba(0, 242, 254, 0.12);
+            overflow: hidden;
+            z-index: 1080;
+        }
+
+        .chat-panel.is-open {
+            display: flex;
+        }
+
+        .chat-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: linear-gradient(90deg, rgba(0, 242, 254, 0.08), rgba(245, 87, 108, 0.08));
+        }
+
+        .chat-panel-title {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: #f6fbff;
+            margin: 0;
+        }
+
+        .chat-panel-subtitle {
+            font-size: 0.76rem;
+            color: rgba(255, 255, 255, 0.55);
+            margin: 2px 0 0;
+        }
+
+        .chat-close-btn {
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 1.1rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-bubble-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chat-bubble-wrap.user {
+            align-items: flex-end;
+        }
+
+        .chat-bubble-wrap.assistant {
+            align-items: flex-start;
+        }
+
+        .chat-bubble {
+            max-width: 88%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            line-height: 1.6;
+            font-size: 0.92rem;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .chat-bubble.user {
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.18), rgba(79, 172, 254, 0.2));
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            color: #f4fdff;
+        }
+
+        .chat-bubble.assistant {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #e8edf4;
+        }
+
+        .chat-movie-list {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .chat-movie-card {
+            display: flex;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .chat-movie-poster {
+            width: 52px;
+            height: 74px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+        }
+
+        .chat-movie-poster.is-fallback {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+        }
+
+        .chat-movie-name {
+            margin: 0 0 4px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .chat-movie-meta,
+        .chat-movie-reason {
+            margin: 0;
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.66);
+            line-height: 1.5;
+        }
+
+        .chat-followup {
+            margin: 0;
+            font-size: 0.78rem;
+            color: #8fe8ff;
+            line-height: 1.6;
+            padding: 8px 12px;
+            border-radius: 12px;
+            background: rgba(0, 242, 254, 0.08);
+            border: 1px solid rgba(0, 242, 254, 0.12);
+            max-width: 88%;
+        }
+
+        .chat-composer {
+            padding: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(3, 9, 18, 0.65);
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            resize: none;
+            min-height: 42px;
+            max-height: 108px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            color: #fff;
+            padding: 10px 12px;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: rgba(0, 242, 254, 0.45);
+            box-shadow: 0 0 0 0.15rem rgba(0, 242, 254, 0.12);
+        }
+
+        .chat-send-btn {
+            min-width: 84px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            color: #03111f;
+            font-weight: 700;
+        }
+
+        .chat-send-btn:disabled {
+            opacity: 0.65;
+        }
+
+        .chat-helper-text {
+            margin-top: 8px;
+            font-size: 0.74rem;
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        @media (max-width: 576px) {
+            .chat-launcher {
+                right: 16px;
+                bottom: 16px;
+            }
+
+            .chat-panel {
+                right: 16px;
+                bottom: 84px;
+                width: calc(100vw - 20px);
+                height: 72vh;
+            }
+        }
     </style>
 </head>
 <body>
@@ -256,7 +492,247 @@
     </div>
 </footer>
 
+<button type="button" class="chat-launcher" id="chatLauncher" aria-label="打开聊天助手">
+    <i class="bi bi-chat-dots-fill"></i>
+</button>
+
+<section class="chat-panel" id="chatPanel" aria-label="电影聊天助手">
+    <div class="chat-panel-header">
+        <div>
+            <p class="chat-panel-title">电影助手</p>
+            <p class="chat-panel-subtitle">基于本地数据库为你查找和解释电影</p>
+        </div>
+        <button type="button" class="chat-close-btn" id="chatCloseBtn" aria-label="关闭聊天窗口">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
+
+    <div class="chat-messages" id="chatMessages"></div>
+
+    <div class="chat-composer">
+        <div class="chat-input-row">
+            <textarea class="chat-input" id="chatInput" placeholder="例如：推荐几部科幻电影" rows="1"></textarea>
+            <button type="button" class="chat-send-btn" id="chatSendBtn">发送</button>
+        </div>
+        <div class="chat-helper-text">先显示回复文本；只有真的返回电影时才展示电影卡片。</div>
+    </div>
+</section>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    (function ($) {
+        var storageKey = 'movie_chat_records_v1';
+        var historyKey = 'movie_chat_history_v1';
+        var $chatLauncher = $('#chatLauncher');
+        var $chatPanel = $('#chatPanel');
+        var $chatCloseBtn = $('#chatCloseBtn');
+        var $chatMessages = $('#chatMessages');
+        var $chatInput = $('#chatInput');
+        var $chatSendBtn = $('#chatSendBtn');
+        var isSending = false;
+
+        function escapeHtml(text) {
+            return $('<div>').text(text || '').html();
+        }
+
+        function loadRecords() {
+            try {
+                var raw = sessionStorage.getItem(storageKey);
+                var parsed = raw ? JSON.parse(raw) : [];
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function loadHistory() {
+            try {
+                var raw = sessionStorage.getItem(historyKey);
+                var parsed = raw ? JSON.parse(raw) : [];
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveRecords(records) {
+            sessionStorage.setItem(storageKey, JSON.stringify(records));
+        }
+
+        function saveHistory(history) {
+            sessionStorage.setItem(historyKey, JSON.stringify(history));
+        }
+
+        function normalizeHistory(records) {
+            var history = [];
+            $.each(records, function (_, item) {
+                if (item && item.role && item.content) {
+                    history.push({ role: item.role, content: item.content });
+                }
+            });
+            return history.slice(-10);
+        }
+
+        function scrollMessagesToBottom() {
+            var el = $chatMessages.get(0);
+            if (el) {
+                el.scrollTop = el.scrollHeight;
+            }
+        }
+
+        function renderMovieCards(movies) {
+            if (!Array.isArray(movies) || !movies.length) {
+                return '';
+            }
+            var cards = $.map(movies, function (movie) {
+                var posterHtml = movie.poster_url
+                    ? '<img class="chat-movie-poster" src="' + escapeHtml(movie.poster_url) + '" alt="' + escapeHtml(movie.name || '') + '" onerror="this.outerHTML=\'<div class=&quot;chat-movie-poster is-fallback&quot;><i class=&quot;bi bi-film&quot;></i></div>\'">'
+                    : '<div class="chat-movie-poster is-fallback"><i class="bi bi-film"></i></div>';
+                return '<a class="chat-movie-card" href="' + escapeHtml(movie.detail_url || '#') + '">' +
+                    posterHtml +
+                    '<div class="chat-movie-body">' +
+                        '<p class="chat-movie-name">' + escapeHtml(movie.name || '') + '</p>' +
+                        '<p class="chat-movie-meta">类型：' + escapeHtml(movie.genres || '') + ' · 评分：' + escapeHtml(String(movie.score || '')) + '</p>' +
+                        '<p class="chat-movie-reason">' + escapeHtml(movie.reason || '') + '</p>' +
+                    '</div>' +
+                '</a>';
+            }).join('');
+            return '<div class="chat-movie-list">' + cards + '</div>';
+        }
+
+        function renderRecords() {
+            var records = loadRecords();
+            if (!records.length) {
+                $chatMessages.html(
+                    '<div class="chat-bubble-wrap assistant">' +
+                        '<div class="chat-bubble assistant">你好，我可以帮你按电影名、类型，或者结合你的评分历史来查电影。</div>' +
+                    '</div>'
+                );
+                scrollMessagesToBottom();
+                return;
+            }
+
+            var html = $.map(records, function (item) {
+                var role = item.role === 'user' ? 'user' : 'assistant';
+                var bubble = '<div class="chat-bubble-wrap ' + role + '">' +
+                    '<div class="chat-bubble ' + role + '">' + escapeHtml(item.content || '') + '</div>';
+                if (role === 'assistant' && item.need_followup && item.followup_question) {
+                    bubble += '<p class="chat-followup">追问建议：' + escapeHtml(item.followup_question) + '</p>';
+                }
+                if (role === 'assistant' && Array.isArray(item.movies) && item.movies.length) {
+                    bubble += renderMovieCards(item.movies);
+                }
+                bubble += '</div>';
+                return bubble;
+            }).join('');
+
+            $chatMessages.html(html);
+            scrollMessagesToBottom();
+        }
+
+        function appendRecord(record) {
+            var records = loadRecords();
+            records.push(record);
+            saveRecords(records);
+            saveHistory(normalizeHistory(records));
+            renderRecords();
+        }
+
+        function setSendingState(sending) {
+            isSending = sending;
+            $chatSendBtn.prop('disabled', sending);
+            $chatInput.prop('disabled', sending);
+        }
+
+        function openChatPanel() {
+            $chatPanel.addClass('is-open');
+            setTimeout(function () { $chatInput.trigger('focus'); }, 80);
+        }
+
+        function closeChatPanel() {
+            $chatPanel.removeClass('is-open');
+        }
+
+        function buildErrorReplyByStatus(xhr) {
+            if (xhr.status === 401) {
+                return '请先登录后再使用电影助手。';
+            }
+            if (xhr.status === 400) {
+                return '输入有误，请检查后再试。';
+            }
+            if (xhr.status === 502 || xhr.status === 503 || xhr.status === 500) {
+                return '助手暂时不可用，请稍后再试。';
+            }
+            return '助手暂时出了点问题，请稍后再试。';
+        }
+
+        function sendMessage() {
+            if (isSending) {
+                return;
+            }
+
+            var message = $.trim($chatInput.val());
+            if (!message) {
+                return;
+            }
+
+            var history = loadHistory();
+            appendRecord({ role: 'user', content: message });
+            $chatInput.val('');
+            setSendingState(true);
+
+            $.ajax({
+                url: '/movie/chat',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    message: message,
+                    history: history
+                })
+            }).done(function (resp) {
+                var ok = resp && resp.ok !== false;
+                appendRecord({
+                    role: 'assistant',
+                    content: (resp && resp.reply) ? resp.reply : '我暂时没有更多信息。',
+                    need_followup: !!(resp && resp.need_followup),
+                    followup_question: (resp && resp.followup_question) ? resp.followup_question : '',
+                    movies: ok && Array.isArray(resp.movies) ? resp.movies : []
+                });
+            }).fail(function (xhr) {
+                var responseJson = xhr.responseJSON || {};
+                appendRecord({
+                    role: 'assistant',
+                    content: responseJson.reply || buildErrorReplyByStatus(xhr),
+                    need_followup: false,
+                    followup_question: '',
+                    movies: []
+                });
+            }).always(function () {
+                setSendingState(false);
+                $chatInput.trigger('focus');
+            });
+        }
+
+        $chatLauncher.on('click', function () {
+            if ($chatPanel.hasClass('is-open')) {
+                closeChatPanel();
+            } else {
+                openChatPanel();
+            }
+        });
+
+        $chatCloseBtn.on('click', closeChatPanel);
+        $chatSendBtn.on('click', sendMessage);
+        $chatInput.on('keydown', function (event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+        renderRecords();
+    })(jQuery);
+</script>
 
 </body>
 </html>
