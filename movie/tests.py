@@ -1,6 +1,8 @@
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
+from unittest.mock import patch
 
+from .ai_assistant import DeepSeekAssistant
 from .models import Genre, Movie, Movie_hot, Movie_rating, Movie_similarity, User
 
 
@@ -45,7 +47,7 @@ class MovieFeatureTests(TestCase):
         cls.movie_b.genre.add(cls.genre_drama)
 
         cls.movie_c = Movie.objects.create(
-            name="Space Mission",
+            name="Interstellar",
             imdb_id=103,
             time="130min",
             release_time="2024-03-01",
